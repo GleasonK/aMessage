@@ -1,4 +1,8 @@
 /* Toolbar area */
+body{ 
+  overflow: hidden;
+}
+
 
 .menu {
   background-color: transparent;
@@ -43,6 +47,11 @@ md-list-item {
   overflow: hidden;
 }
 
+#thread-list {
+  margin-bottom: 80px;
+  overflow: auto;
+}
+
 /* Primary content area */
 
 
@@ -50,6 +59,7 @@ md-list-item {
   padding-left: 40px;
   padding-right: 40px;
   padding-top: 5px;
+  margin-bottom: 100px;
 }
 
 #content .md-button.contact {
@@ -108,4 +118,17 @@ span.name {
   font-weight: bold;
   font-size:1.1em;
   padding-left:5px;
+}
+
+.msg-input {
+  margin: 15px 0 0 10px;
+  color:white !important;
+}
+
+.incoming {
+  color:#3F51B5 !important;
+}
+
+.outgoing {
+  color:#607D8B !important;
 }

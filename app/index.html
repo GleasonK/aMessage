@@ -11,6 +11,7 @@
     <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
     <link rel="stylesheet" href="../node_modules/angular-material/angular-material.css"/>
     <link rel="stylesheet" href="assets/app.css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <style type="text/css">
         /**
@@ -20,10 +21,11 @@
           display: none !important;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
   </head>
 
-  <body ng-app="starterApp" layout="row" ng-controller="UserController as ul" ng-cloak >
+  <body ng-app="aMessage" layout="row" ng-controller="UserController as ul" ng-cloak >
 
   <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2"
       md-component-id="left"
@@ -31,11 +33,11 @@
       md-is-locked-open="$mdMedia('gt-sm')">
 
     <md-toolbar class="md-whiteframe-z1">
-      <h3>Users</h3>
+      <h3>aMessage</h3>
     </md-toolbar>
 
-    <md-list>
-      <md-list-item ng-repeat="it in ul.users">
+    <md-list id="thread-list">
+      <md-list-item ng-repeat="it in users">
           <md-button ng-click="ul.selectUser(it)" ng-class="{'selected' : it === ul.selected }">
             <md-icon md-svg-icon="{{it.avatar}}" class="avatar"></md-icon>
             {{it.name}}
@@ -46,46 +48,70 @@
   </md-sidenav>
 
 
-  <div flex layout="column" tabIndex="-1" role="main" class="md-whiteframe-z2">
+  <div flex layout="column" layout-fill  role="main" class="md-whiteframe-z2">
 
     <md-toolbar layout="row" class="md-whiteframe-z1">
       <md-button id="main" class="menu" hide-gt-sm ng-click="ul.toggleList()" aria-label="Show User List">
         <md-icon md-svg-icon="menu" ></md-icon>
       </md-button>
-      <h3>Angular Material - Starter App</h3>
+      <h3>{{ul.selected.name}}</h3>
+      <md-button id="main" class="add" ng-click="ul.newMessage()" aria-label="New Chat">
+        <md-icon md-svg-icon="add" ></md-icon>
+      </md-button>
     </md-toolbar>
 
-    <md-content flex id="content">
-        <md-icon md-svg-icon="{{ul.selected.avatar}}" class="avatar"></md-icon>
-        <h2>{{ul.selected.name}}</h2>
-        <p>{{ul.selected.content}}</p>
 
-        <md-button class="contact" md-no-ink ng-click="ul.makeContact(ul.selected)" aria-label="Share with {{ ul.selected.name }}">
-          <md-tooltip>Contact {{ ul.selected.name }}</md-tooltip>
-          <md-icon md-svg-icon="share"></md-icon>
-        </md-button>
-      </md-content>
+    <md-content flex id="content" class="md-no-momentum">
+      <md-icon md-svg-icon="{{ul.selected.avatar}}" class="avatar"></md-icon>
+      <p>{{ul.selected.thread}}</p>
+      <md-list>
+        <md-list-item class="md-2-line" ng-repeat="it in ul.selected.messages">
+          <div class="md-list-item-text">
+            <h3 class="{{it.type}}"><b>{{it.name}}</b></h3> 
+            <p>{{it.message}}</p>
+          </div>
+        </md-list-item>
+      </md-list>
+    </md-content>
 
+    <md-bottom-sheet layout="row" class="md-whiteframe-z2">
+      <md-input-container flex class="msg-input md-block" >
+        <textarea  placeholder="Enter a message..." ng-model="ul.message" aria-label="New Chat" aria-invalid="false" required></textarea>
+      </md-input-container>
+
+      <md-button id="main" class="send" ng-click="ul.sendMessage()" aria-label="Send Chat">
+        <md-icon class="material-icons">send</md-icon>
+      </md-button>
+    </md-bottom-sheet>
   </div>
+
+
 
     <script src="../node_modules/angular/angular.js"></script>
     <script src="../node_modules/angular-animate/angular-animate.js"></script>
     <script src="../node_modules/angular-aria/angular-aria.js"></script>
     <script type="text/javascript" src="../node_modules/angular-material/angular-material.js"></script>
 
-    <script src="./src/users/Users.js"></script>
-    <script src="./src/users/UserController.js"></script>
-    <script src="./src/users/UserService.js"></script>
+    <!-- PubNub -->
+    <script src="http://cdn.pubnub.com/pubnub-3.14.0.min.js"></script>
+    <script src="http://cdn.pubnub.com/sdk/pubnub-angular/pubnub-angular-3.1.1.min.js"></script>
+
+
+    <script src="./src/messaging/Message.js"></script>
+    <script src="./src/messaging/MessageController.js"></script>
+    <script src="./src/messaging/MessageService.js"></script>
 
     <script type="text/javascript">
 
           angular
-              .module('starterApp', ['ngMaterial', 'users'])
+              .module('aMessage', ['ngMaterial', 'pubnub.angular.service','messaging'])
               .config(function($mdThemingProvider, $mdIconProvider){
 
                   $mdIconProvider
                       .defaultIconSet("./assets/svg/avatars.svg", 128)
                       .icon("menu"       , "./assets/svg/menu.svg"        , 24)
+                      .icon("add"        , "./assets/svg/add.svg"        , 24)
+                      .icon("send"       , "./assets/svg/send.svg"        , 24)
                       .icon("share"      , "./assets/svg/share.svg"       , 24)
                       .icon("google_plus", "./assets/svg/google_plus.svg" , 512)
                       .icon("hangouts"   , "./assets/svg/hangouts.svg"    , 512)
@@ -93,8 +119,8 @@
                       .icon("phone"      , "./assets/svg/phone.svg"       , 512);
 
                       $mdThemingProvider.theme('default')
-                          .primaryPalette('brown')
-                          .accentPalette('red');
+                          .primaryPalette('indigo')
+                          .accentPalette('blue');
 
               });
 
