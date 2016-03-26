@@ -54,6 +54,21 @@
       return -1;
     }
 
+    function updateSent(msg, idx){
+      if (idx==-1) return;
+      var user = $scope.users[idx];
+      var msgs = user.messages;
+      for(var i=0; i<msgs.length; i++){
+        var m = msgs[i];
+        if (m.timestamp == msg.timestamp){
+          m.isSent = true;
+          $scope.$apply();
+          console.log(m);
+          return;
+        }
+      }
+    }
+
     pubnub.subscribe({
       channel: myNumber,
       message: function(msg){
@@ -61,7 +76,8 @@
         var thread = msg.sender ? msg.sender : msg.number;
         var idx = threadIndex($scope.users, thread);
         console.log(msg);
-        console.log(idx);
+        if (msg.type == "receipt") updateSent(msg, idx);
+        if (msg.type != "incoming" && msg.type != "outgoing") return;
         if (idx==-1){ // New thread
           var name = msg.sender ? msg.name : thread;
           var avatar = userService.getAvatar(thread);
@@ -113,7 +129,13 @@
     function sendMessage() {
       if (!self.selected) return;
       if (!self.message) return;
-      var data = {type:"outgoing",number:self.selected.thread,message:self.message,name:myName};
+      var data = {
+        type:"outgoing",
+        number:self.selected.thread,
+        message:self.message,
+        name:myName,
+        timestamp:Date.now()
+      };
       // self.users[0].messages.push(data);
       // return;
       self.message="";

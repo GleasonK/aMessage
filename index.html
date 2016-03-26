@@ -67,7 +67,7 @@
       <md-list>
         <md-list-item class="md-2-line" ng-repeat="it in ul.selected.messages">
           <div class="md-list-item-text">
-            <h3 class="{{it.type}}"><b>{{it.name}}</b></h3> 
+            <h3 class="{{it.type}}"><b>{{it.name}}</b><md-icon md-svg-icon="check" class="check" ng-if="it.isSent" style="height: 15px; opacity:0.75;"></md-icon></h3> 
             <p>{{it.message}}</p>
           </div>
         </md-list-item>
@@ -110,7 +110,8 @@
                   $mdIconProvider
                       .defaultIconSet("./assets/svg/avatars.svg", 128)
                       .icon("menu"       , "./assets/svg/menu.svg"        , 24)
-                      .icon("add"        , "./assets/svg/add.svg"        , 24)
+                      .icon("add"        , "./assets/svg/add.svg"         , 24)
+                      .icon("check"      , "./assets/svg/check.svg"       , 24)
                       .icon("send"       , "./assets/svg/send.svg"        , 24)
                       .icon("share"      , "./assets/svg/share.svg"       , 24)
                       .icon("google_plus", "./assets/svg/google_plus.svg" , 512)

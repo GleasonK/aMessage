@@ -44,6 +44,20 @@
         return 'svg-' + idx;
     }
 
+    function updateSent(msg, idx, threads){
+      if (idx==-1) return;
+      var user = threads[idx];
+      var msgs = user.messages;
+      for(var i=0; i<msgs.length; i++){
+        var m = msgs[i];
+        if (m.timestamp == msg.timestamp){
+          m.isSent = true;
+          console.log(m);
+          return;
+        }
+      }
+    }
+
     function processUsers(msgs, resolve){
       var threads = [];
       for (var i = 0; i < msgs.length; i++) {
@@ -52,6 +66,10 @@
         var thread = msg.sender ? msg.sender : msg.number;
         if (!thread) continue;
         var idx = threadIndex(threads,thread);
+        
+        if (msg.type == "receipt") updateSent(msg,idx,threads);
+        if (msg.type != "incoming" && msg.type != "outgoing") continue;
+
         if (idx != -1){
           var user = threads.splice(idx,1)[0];
           if (msg.sender) user.name = msg.name;
