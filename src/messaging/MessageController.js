@@ -42,8 +42,8 @@
     var pubnub = PUBNUB.init({
             publish_key: 'pub-c-0181d825-aa47-448a-bd4c-bcf1ba2a8623',
             subscribe_key: 'sub-c-e4f06386-ec67-11e5-be6a-02ee2ddab7fe',
-            cipher_key : cipher,
             auth_key: authkey,
+            cipher_key : cipher,
             ssl: true
         });
 
@@ -94,7 +94,8 @@
           $scope.$apply();
         }
         scrollBottom();
-      }
+      },
+      error: function(err){ console.log(err);}
     });
 
     // Load all registered users

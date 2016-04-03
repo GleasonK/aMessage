@@ -115,7 +115,8 @@
       loadAll : function() {
         var number = getUrlParameter("n");
         var cipher = getUrlParameter("c");
-        if (!number || !cipher) {
+        var authkey= getUrlParameter("a");
+        if (!number || !cipher || !authkey) {
           window.location.replace("login.html");
         }
         console.log(cipher);
@@ -124,6 +125,7 @@
             publish_key: 'pub-c-0181d825-aa47-448a-bd4c-bcf1ba2a8623',
             subscribe_key: 'sub-c-e4f06386-ec67-11e5-be6a-02ee2ddab7fe',
             cipher_key : cipher,
+            auth_key: authkey,
             ssl: true
         });
 
