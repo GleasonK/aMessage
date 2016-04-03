@@ -18,6 +18,7 @@
     var self = this;
     var myNumber = userService.getUrlParameter("n");
     var cipher   = userService.getUrlParameter("c");
+    var authkey  = userService.getUrlParameter("a");
     var myName   = "Me"; // Edit my name 
 
     console.log($scope);
@@ -42,6 +43,7 @@
             publish_key: 'pub-c-0181d825-aa47-448a-bd4c-bcf1ba2a8623',
             subscribe_key: 'sub-c-e4f06386-ec67-11e5-be6a-02ee2ddab7fe',
             cipher_key : cipher,
+            auth_key: authkey,
             ssl: true
         });
 

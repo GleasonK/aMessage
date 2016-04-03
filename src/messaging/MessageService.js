@@ -130,7 +130,7 @@
         return $q(function(resolve,reject){
           pubnub.history({
             channel : number,
-            count : 100,
+            count : 200,
             callback : function(m){
               if (m[0]){
                 processUsers(m[0], resolve);
