@@ -7,6 +7,22 @@ __Send and receive texts from your laptop!__
 
 Android app that allows you to send and receive texts from your laptop. Built with [PubNub](https://www.pubnub.com/). Web front-end written in AngularJS.
 
+### Send and Receive Texts
+
+This app will allow you to send and receive texts from any laptop, anywhere. Your phone must still be on since it sends texts through the device, but it can be anywhere.
+
+### Control Media
+
+[_NEW_] aMessage comes with a few media commands. There is a phone icon in the top-right of the web console. Click this to open a chat with your phone. You may then begin to use media commands:
+
+- `/play` Play Media
+- `/pause` Pause Media
+- `/vup` Volume Up
+- `/vdown` Volume Down
+- `/next` Next Song
+- `/prev` Previous Song
+- `/help` Display Command Help
+
 ## To Use
 
 To get started using aMessage, follow the instructions to [download the APK here](http://kevingleason.me/aMessage/get.html). 
