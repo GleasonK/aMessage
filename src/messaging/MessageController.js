@@ -28,6 +28,7 @@
     self.toggleList   = toggleUsersList;
     self.sendMessage  = sendMessage;
     self.newMessage   = newMessage;
+    self.openPhone    = openPhone;
     self.message      = "";
 
     $scope.users      = [ ];
@@ -56,7 +57,9 @@
       return -1;
     }
 
-    function updateSent(msg, idx){
+    function updateSent(msg){
+      var thread = msg.sender ? msg.sender : msg.number;
+      var idx = threadIndex($scope.users, thread)
       if (idx==-1) return;
       var user = $scope.users[idx];
       var msgs = user.messages;
@@ -75,25 +78,13 @@
       channel: myNumber,
       message: function(msg){
         if (msg.type == "incoming") userService.notify(msg);
-        var thread = msg.sender ? msg.sender : msg.number;
-        var idx = threadIndex($scope.users, thread);
         console.log(msg);
-        if (msg.type == "receipt") updateSent(msg, idx);
-        if (msg.type != "incoming" && msg.type != "outgoing") return;
-        if (idx==-1){ // New thread
-          var name = msg.sender ? msg.name : thread;
-          var avatar = userService.getAvatar(thread);
-          var messages = [msg];
-          $scope.users.unshift({name:name, avatar:avatar, messages:messages, thread:thread});
-          $scope.$apply();
-        } else {
-          var user = $scope.users.splice(idx,1)[0];
-          if (msg.sender) user.name = msg.name;
-          user.messages.push(msg);
-          $scope.users.unshift(user);
-          $scope.$apply();
-        }
+        if (msg.type == "receipt") updateSent(msg);
+        if (msg.type != "incoming" && msg.type != "outgoing" && msg.type != "command") return;
+        addMessage(msg);
         scrollBottom();
+        $scope.$apply();
+
       },
       error: function(err){ console.log(err);}
     });
@@ -132,6 +123,7 @@
     function sendMessage() {
       if (!self.selected) return;
       if (!self.message) return;
+      
       var data = {
         type:"outgoing",
         number:self.selected.thread,
@@ -139,9 +131,19 @@
         name:myName,
         timestamp:Date.now()
       };
+
+      self.message="";
+
+      if (self.selected.thread == myNumber && data.message.charAt(0)=="/"){
+        data.type = "command";
+        if (data.message=="/help"){
+          data.message = displayHelp();
+          return addMessage(data);
+        }
+      }
+
       // self.users[0].messages.push(data);
       // return;
-      self.message="";
       pubnub.publish({
          channel: myNumber,        
          message: data,
@@ -153,7 +155,39 @@
 
     function newMessage(){
       var number = prompt("Enter phone number...");
-      var thread = number;
+      messageTo(number);
+    }
+
+    function openPhone(){
+      messageTo(myNumber);
+    }
+
+    function displayHelp(){
+      return "/vup => Volume Up; "+
+             "/vdown => Volume Down; "+
+             "/play => Play Media; " +
+             "/pause => Pause Media; " +
+             "/next => Next Song; " +
+             "/prev => Previous Song;"
+    }
+
+    function addMessage(msg){
+      var thread = msg.sender ? msg.sender : msg.number;
+      var idx = threadIndex($scope.users, thread);
+      if (idx==-1){ // New thread
+          var name = msg.sender ? msg.name : thread;
+          var avatar = userService.getAvatar(thread);
+          var messages = [msg];
+          $scope.users.unshift({name:name, avatar:avatar, messages:messages, thread:thread});
+        } else {
+          var user = $scope.users.splice(idx,1)[0];
+          if (msg.sender) user.name = msg.name;
+          user.messages.push(msg);
+          $scope.users.unshift(user);
+        }
+    }
+
+    function messageTo(thread){
       var idx = threadIndex($scope.users, thread);
       console.log(idx);
       if (idx==-1){ // New thread
@@ -168,8 +202,6 @@
       self.selectUser(0);
       scrollBottom();
     }
-
-
 
   }
 
