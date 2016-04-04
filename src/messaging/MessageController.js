@@ -84,7 +84,6 @@
         addMessage(msg);
         scrollBottom();
         $scope.$apply();
-
       },
       error: function(err){ console.log(err);}
     });

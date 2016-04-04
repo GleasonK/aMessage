@@ -79,7 +79,7 @@
 
     <md-bottom-sheet layout="row" class="md-whiteframe-z2">
       <md-input-container flex class="msg-input md-block" >
-        <textarea  placeholder="Enter a message..." ng-model="ul.message" aria-label="New Chat" aria-invalid="false" required></textarea>
+        <textarea enter-submit="ul.sendMessage()" placeholder="Enter a message..." ng-model="ul.message" aria-label="New Chat" aria-invalid="false" required></textarea>
       </md-input-container>
 
       <md-button id="main" class="send" ng-click="ul.sendMessage()" aria-label="Send Chat">
