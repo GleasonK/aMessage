@@ -1,5 +1,5 @@
 # aMessage
-## Send and receive texts from your laptop!
+__Send and receive texts from your laptop!__
 
 ![cover_img](http://kevingleason.me/aMessage/assets/img/aMessage2.png)
 
