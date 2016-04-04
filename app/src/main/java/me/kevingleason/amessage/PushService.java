@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.IBinder;
@@ -108,7 +109,7 @@ public class PushService extends Service {
         String sentFilter = MainActivity.PACKAGE + ".SENT";
         Intent sentIntent = new Intent(sentFilter);
         sentIntent.putExtra(Config.PN_TIMESTAMP,timeStamp);
-        sentIntent.putExtra(Config.PN_NUMBER,number);
+        sentIntent.putExtra(Config.PN_NUMBER, number);
         PendingIntent sentPI = PendingIntent.getBroadcast(this, (int)timeStamp, sentIntent, 0);
         SmsManager sms = SmsManager.getDefault();
         ArrayList<String> msgs = sms.divideMessage(text);
@@ -117,6 +118,34 @@ public class PushService extends Service {
             sentIntents.add(sentPI);
         }
         sms.sendMultipartTextMessage(number, null, msgs, sentIntents, null);
+    }
+
+    public void handlePNCommand(String cmd){
+        Intent i = new Intent("com.android.music.musicservicecommand");
+        AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        switch (cmd){
+            case Config.CMD_PLAY:
+                i.putExtra("command", "play");
+                break;
+            case Config.CMD_PAUSE:
+                i.putExtra("command", "pause");
+                break;
+            case Config.CMD_NEXT:
+                i.putExtra("command", "next");
+                break;
+            case Config.CMD_PREV:
+                i.putExtra("command", "previous");
+                break;
+            case Config.CMD_VOLUME_UP:
+                audio.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                        AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+                break;
+            case Config.CMD_VOLUME_DOWN:
+                audio.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                        AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+                return;
+        }
+        sendBroadcast(i);
     }
 
     class PushReceiver extends Callback {
@@ -142,6 +171,10 @@ public class PushService extends Service {
                             String msgText = jsonMsg.getString(Config.PN_MESSAGE);
                             long timeStamp = jsonMsg.getLong(Config.PN_TIMESTAMP);
                             sendText(msgNumber,msgText, timeStamp);
+                            break;
+                        case Config.PN_COMMAND:
+                            String cmd = jsonMsg.getString(Config.PN_MESSAGE);
+                            handlePNCommand(cmd);
                             break;
                         default:
                             Log.i("PS-sC","PNMessageType: " + type);

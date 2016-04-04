@@ -19,4 +19,13 @@ public class Config {
     public static final String PN_MESSAGE  = "message";
     public static final String PN_SENDER   = "sender";
     public static final String PN_NUMBER   = "number";
+    public static final String PN_COMMAND  = "command";
+
+    //Commands
+    public static final String CMD_VOLUME_UP   = "/vup";
+    public static final String CMD_VOLUME_DOWN = "/vdown";
+    public static final String CMD_PLAY        = "/play";
+    public static final String CMD_PAUSE       = "/pause";
+    public static final String CMD_NEXT        = "/next";
+    public static final String CMD_PREV        = "/prev";
 }
