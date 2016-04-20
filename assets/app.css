@@ -3,6 +3,9 @@ body{
   overflow: hidden;
 }
 
+md-list-item a {
+  color:#03a9f4;
+}
 
 .menu {
   background-color: transparent;

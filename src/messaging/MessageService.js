@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('messaging')
-         .service('userService', ['$q', UserService]);
+         .service('userService', ['$q', '$sce', UserService]);
 
   /**
    * Users DataService
@@ -12,7 +12,7 @@
    * @returns {{loadAll: Function}}
    * @constructor
    */
-  function UserService($q, Pubnub){
+  function UserService($q, $sce, $sanitize, Pubnub){
     
     var getUrlParameter = function getUrlParameter(sParam) {
         var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -69,7 +69,7 @@
         
         if (msg.type == "receipt") updateSent(msg,idx,threads);
         if (msg.type != "incoming" && msg.type != "outgoing") continue;
-
+        msg.message = displayString(msg.message);
         if (idx != -1){
           var user = threads.splice(idx,1)[0];
           if (msg.sender) user.name = msg.name;
@@ -83,6 +83,13 @@
         }
       }
       resolve(threads);
+    }
+
+    // TODO: FIX THIS. MAKE URL
+    function displayString(msgText){
+      var safe = msgText.fix();
+      var linked = safe.linkify();
+      return $sce.trustAsHtml(linked);
     }
 
     function notify(msg){
@@ -148,6 +155,7 @@
       },
       getAvatar : getAvatar,
       getUrlParameter : getUrlParameter,
+      displayString : displayString,
       notify : notify
     };
   }

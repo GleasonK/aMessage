@@ -77,7 +77,8 @@
     pubnub.subscribe({
       channel: myNumber,
       message: function(msg){
-        if (msg.type == "incoming") userService.notify(msg);
+        var copy = JSON.parse(JSON.stringify(msg));
+        if (msg.type == "incoming") userService.notify(copy);
         console.log(msg);
         if (msg.type == "receipt") updateSent(msg);
         if (msg.type != "incoming" && msg.type != "outgoing" && msg.type != "command") return;
@@ -173,6 +174,7 @@
     function addMessage(msg){
       var thread = msg.sender ? msg.sender : msg.number;
       var idx = threadIndex($scope.users, thread);
+      msg.message = userService.displayString(msg.message);
       if (idx==-1){ // New thread
           var name = msg.sender ? msg.name : thread;
           var avatar = userService.getAvatar(thread);

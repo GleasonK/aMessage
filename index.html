@@ -71,7 +71,7 @@
         <md-list-item class="md-2-line" ng-repeat="it in ul.selected.messages">
           <div class="md-list-item-text">
             <h3 class="{{it.type}}"><b>{{it.name}}</b><md-icon md-svg-icon="check" class="check" ng-if="it.isSent" style="height: 15px; opacity:0.75;"></md-icon></h3> 
-            <p>{{it.message}}</p>
+            <p ng-bind-html="it.message"></p>
           </div>
         </md-list-item>
       </md-list>
@@ -94,6 +94,7 @@
     <script src="assets/angular-animate.js"></script>
     <script src="assets/angular-aria.js"></script>
     <script type="text/javascript" src="assets/angular-material.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.5.5/angular-sanitize.min.js"></script>
 
     <!-- PubNub -->
     <script src="https://cdn.pubnub.com/pubnub-3.14.0.min.js"></script>
